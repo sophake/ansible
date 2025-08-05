@@ -1,14 +1,20 @@
 ---
 - hosts: localhost
-become: true
-tasks:
-- name: Install Apache
-ansible.builtin.apt: name=apache2
-- name: Start the apache2 services
-ansible.builtin.service:
-name: apache2
-state: started
-- name: Copy index.html
-ansible.builtin.copy:
-src: index.html
-dest: /var/www/html/index.html
+  become: true
+  tasks:
+    - name: Install Apache
+      ansible.builtin.apt:
+        name: apache2
+        state: present # Explicitly ensure the package is present
+
+    - name: Start and enable the apache2 service
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: true # Ensure the service starts on boot
+
+    - name: Copy index.html
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/index.html
+        mode: '0644' # Set appropriate file permissions
